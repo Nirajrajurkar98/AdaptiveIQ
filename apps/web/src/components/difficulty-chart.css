@@ -1,0 +1,3 @@
+.difficulty-chart{width:100%;height:112px;margin:4px 0 8px}
+.chart-loading{height:112px;margin:4px 0 8px;border-radius:7px;background:linear-gradient(90deg,#f5f6fa,#eef0f7,#f5f6fa);background-size:200% 100%;animation:chart-shimmer 1.4s ease infinite}
+@keyframes chart-shimmer{to{background-position:-200% 0}}

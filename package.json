@@ -1,0 +1,12 @@
+{
+  "name": "adaptiveiq",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev": "npm run dev --workspace @adaptiveiq/web",
+    "build": "npm run build --workspace @adaptiveiq/web",
+    "test": "npm test --workspace @adaptiveiq/web",
+    "typecheck": "npm run typecheck --workspace @adaptiveiq/web"
+  }
+}
