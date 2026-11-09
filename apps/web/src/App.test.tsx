@@ -77,6 +77,16 @@ describe('prototype student experience', () => {
     expect(screen.queryByText(/operating systems: processes/i)).not.toBeInTheDocument();
   });
 
+  it('shows electrical and computing subject scenes for their quizzes', () => {
+    const { container } = render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
+    expect(container.querySelector('.electric-scene')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('combobox', { name: /preview as role/i }), { target: { value: 'Teacher' } });
+    fireEvent.click(screen.getByRole('button', { name: /my quizzes/i }));
+    fireEvent.click(screen.getByRole('button', { name: /data structures foundations/i }));
+    expect(container.querySelector('.computing-scene')).toBeInTheDocument();
+  });
+
   it('keeps names outside the top ten private while showing the current student result', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: 'Leaderboards' }));
