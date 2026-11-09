@@ -5,6 +5,7 @@
 - Student and Teacher dashboard preview with a role switcher.
 - College-scoped mock quiz listing with search, status, and topic filters.
 - Quiz instructions and one-question-at-a-time practice flow.
+- Students select an option and submit it to record an answer and advance; unanswered questions cannot be skipped.
 - Mock autosave, pause/resume, deadline submission while the attempt screen is open, and attempt limits in browser storage.
 - Answer review, score, accuracy, unanswered count, topic/difficulty summaries.
 - Per-quiz mock leaderboard with competition ranks and top-10 visibility.

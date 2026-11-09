@@ -16,12 +16,27 @@ describe('prototype student experience', () => {
     expect(screen.queryByText(/difficulty level/i)).not.toBeInTheDocument();
   });
 
+  it('requires an answer and explicit submission before moving to the next question', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
+    fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
+    fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
+    expect(screen.getByRole('button', { name: /submit answer/i })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: /skip/i })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
+    expect(screen.getByText(/question 01/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /submit answer/i })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: /submit answer/i }));
+    expect(screen.getByText(/question 02/i)).toBeInTheDocument();
+  });
+
   it('saves answers on pause and resumes an active attempt', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
     fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
+    fireEvent.click(screen.getByRole('button', { name: /submit answer/i }));
     const savedAttempt = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { questionIds: string[] };
     expect(savedAttempt.questionIds[0]).toContain('-easy-');
     fireEvent.click(screen.getByRole('button', { name: /pause & save/i }));
@@ -38,10 +53,12 @@ describe('prototype student experience', () => {
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
     fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
+    fireEvent.click(screen.getByRole('button', { name: /submit answer/i }));
     const initialAttempt = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { questionIds: string[] };
     expect(initialAttempt.questionIds[0]).toContain('-easy-');
     for (let answer = 0; answer < 2; answer += 1) {
       fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
+      fireEvent.click(screen.getByRole('button', { name: /submit answer/i }));
     }
     expect(screen.getByText(/question 04/i)).toBeInTheDocument();
     const advancedAttempt = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { questionIds: string[] };
