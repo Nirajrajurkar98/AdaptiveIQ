@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { advanceAdaptiveState, initialAdaptiveState, type AdaptiveState } from './adaptive';
 import { rankEntries, visibleLeaderboard } from './leaderboard';
 import { calculateResults, canStartOrResume, getQuizStatus, nextQuestionIndex } from './quiz';
+import { chooseNextQuestion, requiredQuestionsPerDifficulty, validateQuestionPool } from './questionPool';
 import { leaderboardEntries, quizzes } from '../data/mockData';
 
 describe('adaptive practice rules', () => {
@@ -31,6 +32,21 @@ describe('adaptive practice rules', () => {
 });
 
 describe('quiz rules', () => {
+  it('requires the rounded-up 70% minimum from each difficulty pool', () => {
+    expect(requiredQuestionsPerDifficulty(20)).toBe(14);
+    expect(requiredQuestionsPerDifficulty(25)).toBe(18);
+    const questions = quizzes[0].questions;
+    expect(validateQuestionPool(questions, 20)).toMatchObject({ valid: true, requiredEach: 14, missing: [] });
+    expect(validateQuestionPool(questions.slice(0, 41), 20)).toMatchObject({ valid: false, missing: ['Hard'] });
+  });
+  it('randomly chooses an unused question at the target difficulty and falls back when exhausted', () => {
+    const questions = quizzes[0].questions;
+    const easy = chooseNextQuestion(questions, 'Easy', [], () => 0);
+    expect(easy?.difficulty).toBe('Easy');
+    expect(chooseNextQuestion(questions, 'Easy', [easy!.id], () => 0)?.id).not.toBe(easy?.id);
+    const allEasyIds = questions.filter((question) => question.difficulty === 'Easy').map((question) => question.id);
+    expect(chooseNextQuestion(questions, 'Easy', allEasyIds, () => 0)?.difficulty).toBe('Medium');
+  });
   it('does not count unanswered questions as correct', () => {
     const questions = quizzes[0].questions.slice(0, 3);
     const result = calculateResults(questions, { [questions[0].id]: questions[0].correctIndex, [questions[1].id]: 1 });

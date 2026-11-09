@@ -17,7 +17,9 @@ The demo role selector previews Student and Teacher experiences. It is not authe
 
 - College hierarchy: College → Department → Academic Year → Class → Section.
 - Users may have different roles in multiple colleges; this is represented in the future architecture, not enforced by a server in this UI-only prototype.
-- Practice quizzes use Easy, Medium, and Hard questions and contain at least 20 questions.
+- Practice quizzes use Easy, Medium, and Hard question pools and deliver the configured number of questions per student (at least 20 in this prototype).
+- Each difficulty pool must contain at least 70% of the configured attempt length, rounded up to a whole question. For a 20-question attempt, teachers provide at least 14 Easy, 14 Medium, and 14 Hard questions (42 questions in the pool).
+- Questions are selected randomly without repeating a question within one attempt. An attempt begins at Easy and selects from the current adaptive difficulty when questions are available.
 - Students can see only mock quizzes for their selected college and matching their mock academic scope.
 - Answers and explanations are revealed only on the results screen.
 - Attempts may be paused and resumed in the same browser. The scheduled deadline triggers submission while the attempt screen is open.
@@ -31,7 +33,7 @@ The demo role selector previews Student and Teacher experiences. It is not authe
 - A correct answer resets the incorrect streak; an incorrect answer resets the correct streak.
 - Difficulty is clamped from Easy through Hard.
 
-The prototype selects the next unanswered question at the resulting difficulty when one is available; if none remain at that level, it falls back to the first unanswered question. This fallback is a documented prototype choice and should be reviewed before production behavior is finalized.
+The prototype selects an unused question randomly at the resulting difficulty when one is available; if that level's pool has no unused questions, it randomly selects from any remaining difficulty. This pool-exhaustion fallback is a prototype choice and should be reviewed before production behavior is finalized.
 
 ## Prototype scoring choice
 

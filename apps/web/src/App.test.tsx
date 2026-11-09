@@ -22,7 +22,8 @@ describe('prototype student experience', () => {
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
     fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
-    expect(localStorage.getItem('adaptiveiq-attempt-q-circuits')).toContain('circuit-theory-1');
+    const savedAttempt = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { questionIds: string[] };
+    expect(savedAttempt.questionIds[0]).toContain('-easy-');
     fireEvent.click(screen.getByRole('button', { name: /pause & save/i }));
     fireEvent.click(screen.getByRole('button', { name: /practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
@@ -31,16 +32,20 @@ describe('prototype student experience', () => {
     expect(screen.getByText(/question 02/i)).toBeInTheDocument();
   });
 
-  it('uses the hidden adaptive difficulty to select the next unanswered question', () => {
+  it('starts at Easy and uses the hidden adaptive difficulty to select the next question', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
-    for (let answer = 0; answer < 3; answer += 1) {
+    fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
+    const initialAttempt = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { questionIds: string[] };
+    expect(initialAttempt.questionIds[0]).toContain('-easy-');
+    for (let answer = 0; answer < 2; answer += 1) {
       fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
     }
     expect(screen.getByText(/question 04/i)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /input of 9 units/i })).toBeInTheDocument();
+    const advancedAttempt = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { questionIds: string[] };
+    expect(advancedAttempt.questionIds[3]).toContain('-medium-');
     expect(screen.queryByText(/medium/i)).not.toBeInTheDocument();
   });
 
@@ -67,6 +72,6 @@ describe('prototype student experience', () => {
     fireEvent.change(screen.getByPlaceholderText(/circuit theory — chapter 3 practice/i), { target: { value: 'Networks practice' } });
     fireEvent.change(screen.getByPlaceholderText(/arrays, linked lists/i), { target: { value: 'Networks, Thevenin theorem' } });
     fireEvent.click(screen.getByRole('button', { name: /create practice quiz/i }));
-    expect(screen.getByRole('alert')).toHaveTextContent('Add 20 more complete questions.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Add at least 14 question(s) for each difficulty: Easy, Medium, Hard.');
   });
 });
