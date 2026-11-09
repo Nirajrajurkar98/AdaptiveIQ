@@ -3,6 +3,7 @@
 ## Included
 
 - Student and Teacher dashboard preview with a role switcher.
+- Dark workspace theme with CSS-based 3D motion, hover feedback, and reduced-motion support.
 - College-scoped mock quiz listing with search, status, and topic filters.
 - Quiz instructions and one-question-at-a-time practice flow.
 - Students can change their selected option until submission; submitting records the answer and advances. Unanswered questions cannot be skipped.
