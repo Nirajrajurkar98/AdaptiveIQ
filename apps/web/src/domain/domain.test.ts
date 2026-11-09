@@ -73,6 +73,15 @@ describe('quiz rules', () => {
   });
 });
 
+describe('subject showcase catalog', () => {
+  it('provides ten sample subject quizzes with all required difficulty pools', () => {
+    const showcaseIds = ['q-cs-it', 'q-dsa', 'q-ai-ml', 'q-cyber', 'q-math-foundations', 'q-mechanical', 'q-civil', 'q-electronics', 'q-physics', 'q-chemistry'];
+    const showcase = quizzes.filter((quiz) => showcaseIds.includes(quiz.id));
+    expect(showcase).toHaveLength(10);
+    for (const quiz of showcase) expect(validateQuestionPool(quiz.questions, quiz.questionCount).valid).toBe(true);
+  });
+});
+
 describe('leaderboard privacy and ranking', () => {
   it('uses competition ranks for equal scores and completion times', () => {
     const ranked = rankEntries([

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { Activity, ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Bell, BookOpen, CalendarDays, Check, ChevronDown, CircleHelp, Clock3, Code2, Command, Cpu, FileQuestion, Filter, LayoutDashboard, ListChecks, MoreHorizontal, Pause, Plus, Search, Settings, ShieldCheck, Sparkles, Trophy, Users, X, Zap } from 'lucide-react';
+import { Activity, ArrowLeft, ArrowRight, ArrowUpRight, Atom, BarChart3, Bell, Binary, BookOpen, Boxes, BrainCircuit, Building2, CalendarDays, Check, ChevronDown, CircleHelp, CircuitBoard, Clock3, Code2, Cog, Command, Cpu, FileQuestion, Filter, FlaskConical, LayoutDashboard, ListChecks, MoreHorizontal, Network, Pause, Plus, Search, Settings, Shield, ShieldCheck, Sparkles, Trophy, Users, X, Zap } from 'lucide-react';
 import { advanceAdaptiveState, initialAdaptiveState, type AdaptiveState } from './domain/adaptive';
 import { visibleLeaderboard } from './domain/leaderboard';
 import { calculateResults, canStartOrResume, getQuizStatus } from './domain/quiz';
@@ -157,13 +157,20 @@ function StatCard({ icon, label, value, trend, tone }: { icon: React.ReactNode; 
 
 function SubjectScene({ subject, hero = false }: { subject: string; hero?: boolean }) {
   const name = subject.toLowerCase();
-  const kind = /electrical|circuit|electronics|power/.test(name) ? 'electric' : /computer|\bit\b|software|data|program|information technology|cyber|ai/.test(name) ? 'computing' : /math|calculus|algebra/.test(name) ? 'math' : /mechanical|manufacturing|machine/.test(name) ? 'mechanical' : 'general';
+  const kind = /electronics|communication engineering/.test(name) ? 'electronics' : /electrical|circuit|power/.test(name) ? 'electric' : /data structure/.test(name) ? 'data' : /artificial intelligence|machine learning|\bai\b/.test(name) ? 'ai' : /cyber.?security|information security/.test(name) ? 'cyber' : /computer|\bit\b|software|program|information technology/.test(name) ? 'computing' : /civil engineering|structural/.test(name) ? 'civil' : /mechanical|manufacturing|machine/.test(name) ? 'mechanical' : /math|calculus|algebra/.test(name) ? 'math' : /physics|electromagnetism/.test(name) ? 'physics' : /chemistry|chemical/.test(name) ? 'chemistry' : 'general';
   return <div className={cx('subject-scene', `${kind}-scene`, hero && 'hero-scene')} aria-hidden="true">
     <span className="scene-orbit orbit-a"/><span className="scene-orbit orbit-b"/><span className="scene-glow"/>
     {kind === 'electric' && <><Zap className="scene-lightning lightning-a"/><Zap className="scene-lightning lightning-b"/><span className="scene-energy">✦</span><span className="scene-caption">V = IR</span></>}
     {kind === 'computing' && <><span className="scene-code"><Code2 size={hero ? 34 : 25}/></span><span className="scene-chip"><Cpu size={hero ? 18 : 14}/></span><span className="scene-caption">&lt;/&gt;</span><span className="scene-node node-a"/><span className="scene-node node-b"/><span className="scene-node node-c"/></>}
+    {kind === 'data' && <><span className="scene-data"><Boxes size={hero ? 42 : 30}/></span><span className="scene-chip"><Network size={hero ? 18 : 14}/></span><span className="scene-caption">O(n)</span><span className="scene-node node-a"/><span className="scene-node node-b"/></>}
+    {kind === 'ai' && <><span className="scene-ai"><BrainCircuit size={hero ? 47 : 32}/></span><span className="scene-caption">AI</span><span className="scene-node node-a"/><span className="scene-node node-b"/><span className="scene-node node-c"/></>}
+    {kind === 'cyber' && <><span className="scene-cyber"><Shield size={hero ? 43 : 31}/></span><span className="scene-caption">SECURE</span><span className="scene-binary"><Binary size={hero ? 24 : 18}/></span><span className="scene-node node-a"/></>}
+    {kind === 'electronics' && <><span className="scene-electronics"><CircuitBoard size={hero ? 48 : 33}/></span><span className="scene-caption">PCB</span><span className="scene-node node-a"/><span className="scene-node node-b"/><span className="scene-node node-c"/></>}
+    {kind === 'civil' && <><span className="scene-civil"><Building2 size={hero ? 45 : 32}/></span><span className="scene-caption">BUILD</span><span className="scene-node node-a"/><span className="scene-node node-b"/></>}
     {kind === 'math' && <><span className="scene-math">∑</span><span className="scene-caption">f(x)</span><span className="scene-node node-a"/><span className="scene-node node-b"/></>}
-    {kind === 'mechanical' && <><span className="scene-gear">⚙</span><span className="scene-caption">MECH</span><span className="scene-node node-a"/></>}
+    {kind === 'mechanical' && <><span className="scene-gear"><Cog size={hero ? 49 : 33}/></span><span className="scene-caption">MECH</span><span className="scene-node node-a"/></>}
+    {kind === 'physics' && <><span className="scene-physics"><Atom size={hero ? 48 : 34}/></span><span className="scene-caption">PHYS</span><span className="scene-node node-a"/><span className="scene-node node-b"/></>}
+    {kind === 'chemistry' && <><span className="scene-chemistry"><FlaskConical size={hero ? 44 : 32}/></span><span className="scene-caption">CHEM</span><span className="scene-bubble bubble-a"/><span className="scene-bubble bubble-b"/></>}
     {kind === 'general' && <><span className="scene-general-icon"><BookOpen size={hero ? 33 : 24}/></span><span className="scene-caption">LEARN</span></>}
   </div>;
 }

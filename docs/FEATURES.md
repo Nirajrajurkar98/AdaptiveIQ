@@ -4,7 +4,8 @@
 
 - Student and Teacher dashboard preview with a role switcher.
 - Dark workspace theme with CSS-based 3D motion, hover feedback, and reduced-motion support.
-- Quiz cards and instructions show subject-specific animated scenes, including electric arcs for electrical topics, code and chip/network visuals for computing, math symbols for mathematics, and gears for mechanical topics.
+- Quiz cards and instructions show subject-specific animated scenes for electrical engineering, CS/IT, data structures, AI/ML, cybersecurity, mathematics, mechanical engineering, civil engineering, electronics, physics, and chemistry.
+- The Sanjivani prototype catalog includes ten additional sample subject quizzes, each with Easy, Medium, and Hard pools that meet the current question-count requirement.
 - College-scoped mock quiz listing with search, status, and topic filters.
 - Quiz instructions and one-question-at-a-time practice flow.
 - Students can change their selected option until submission; submitting records the answer and advances. Unanswered questions cannot be skipped.
