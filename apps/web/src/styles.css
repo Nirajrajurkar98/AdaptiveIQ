@@ -163,3 +163,10 @@ body{background:#090d18;color:#e5eaf4}
 @keyframes atom-spin{to{transform:translateZ(15px) rotateY(360deg) rotateZ(360deg)}}
 @keyframes flask-bob{0%,100%{transform:translateZ(15px) rotateZ(-4deg)}50%{transform:translateZ(19px) rotateZ(4deg) translateY(-3px)}}
 @keyframes bubble-rise{0%,100%{translate:0 3px;opacity:.5}50%{translate:0 -5px;opacity:1}}
+.compact-scene{width:38px;height:38px}
+.compact-scene::before{inset:5px;border-radius:11px}
+.compact-scene .scene-orbit{scale:.72}
+.compact-scene .scene-lightning{scale:.82}
+.compact-scene .scene-caption{font-size:5px;bottom:2px;right:3px}
+.compact-scene .scene-chip{width:17px;height:17px;right:5px;bottom:5px}
+.compact-scene .scene-chip svg{width:11px;height:11px}

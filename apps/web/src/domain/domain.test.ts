@@ -3,6 +3,7 @@ import { advanceAdaptiveState, initialAdaptiveState, type AdaptiveState } from '
 import { rankEntries, visibleLeaderboard } from './leaderboard';
 import { calculateResults, canStartOrResume, getQuizStatus, nextQuestionIndex } from './quiz';
 import { chooseNextQuestion, requiredQuestionsPerDifficulty, validateQuestionPool } from './questionPool';
+import { resolveSubjectSceneKind } from './subjectScene';
 import { leaderboardEntries, quizzes } from '../data/mockData';
 
 describe('adaptive practice rules', () => {
@@ -79,6 +80,15 @@ describe('subject showcase catalog', () => {
     const showcase = quizzes.filter((quiz) => showcaseIds.includes(quiz.id));
     expect(showcase).toHaveLength(10);
     for (const quiz of showcase) expect(validateQuestionPool(quiz.questions, quiz.questionCount).valid).toBe(true);
+  });
+});
+
+describe('quiz-title animation selection', () => {
+  it('uses recognizable quiz-title keywords before the broader subject fallback', () => {
+    expect(resolveSubjectSceneKind({ title: 'Circuit Theory Practice', subject: 'Computer Engineering', topics: [] })).toBe('electric');
+    expect(resolveSubjectSceneKind({ title: 'Neural Network Foundations', subject: 'Computer Science & IT', topics: [] })).toBe('ai');
+    expect(resolveSubjectSceneKind({ title: 'General Revision', subject: 'Electrical Engineering', topics: [] })).toBe('electric');
+    expect(resolveSubjectSceneKind({ title: 'General Revision', subject: 'Open Electives', topics: [] })).toBe('general');
   });
 });
 
