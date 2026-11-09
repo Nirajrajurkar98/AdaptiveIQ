@@ -26,8 +26,13 @@ describe('prototype student experience', () => {
     fireEvent.click(screen.getByRole('button', { name: /apply the core principle carefully/i }));
     expect(screen.getByText(/question 01/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submit answer/i })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: /ignore the input conditions/i }));
+    expect(screen.getByRole('button', { name: /apply the core principle carefully/i })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: /ignore the input conditions/i })).toHaveAttribute('aria-pressed', 'true');
     fireEvent.click(screen.getByRole('button', { name: /submit answer/i }));
     expect(screen.getByText(/question 02/i)).toBeInTheDocument();
+    const submitted = JSON.parse(localStorage.getItem('adaptiveiq-attempt-q-circuits') ?? '{}') as { answers: Record<string, number>; questionIds: string[] };
+    expect(submitted.answers[submitted.questionIds[0]]).toBe(1);
   });
 
   it('saves answers on pause and resumes an active attempt', () => {

@@ -20,7 +20,7 @@ The demo role selector previews Student and Teacher experiences. It is not authe
 - Practice quizzes use Easy, Medium, and Hard question pools and deliver the configured number of questions per student (at least 20 in this prototype).
 - Each difficulty pool must contain at least 70% of the configured attempt length, rounded up to a whole question. For a 20-question attempt, teachers provide at least 14 Easy, 14 Medium, and 14 Hard questions (42 questions in the pool).
 - Questions are selected randomly without repeating a question within one attempt. An attempt begins at Easy and selects from the current adaptive difficulty when questions are available.
-- Students must choose an option and explicitly submit it before advancing. Skipping unanswered questions is not allowed.
+- Students must choose an option and explicitly submit it before advancing. They may change their selection before submitting; after submission it is recorded. Skipping unanswered questions is not allowed.
 - Students can see only mock quizzes for their selected college and matching their mock academic scope.
 - Answers and explanations are revealed only on the results screen.
 - Attempts may be paused and resumed in the same browser. The scheduled deadline triggers submission while the attempt screen is open.
