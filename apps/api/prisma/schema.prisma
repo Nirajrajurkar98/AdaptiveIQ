@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CollegeRole {
+  PLATFORM_ADMIN
+  COLLEGE_ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum AccountRole {
+  PLATFORM_ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  DEACTIVATED
+}
+
+model User {
+  id               String             @id @default(cuid())
+  email            String             @unique
+  displayName      String
+  passwordHash     String?
+  role             AccountRole        @default(STUDENT)
+  status           AccountStatus      @default(PENDING)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  memberships      CollegeMembership[]
+  teacherProfile   TeacherProfile?
+  studentProfile   StudentProfile?
+  sessions         AuthSession[]
+  createdTeacherInvitations TeacherInvitation[] @relation("TeacherInvitationCreator")
+  platformBootstrap PlatformBootstrap?
+}
+
+model PlatformBootstrap {
+  id          String   @id
+  adminUserId String   @unique
+  createdAt   DateTime @default(now())
+  admin       User     @relation(fields: [adminUserId], references: [id], onDelete: Restrict)
+}
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model TeacherInvitation {
+  id               String    @id @default(cuid())
+  email            String
+  tokenHash        String    @unique
+  expiresAt        DateTime
+  consumedAt       DateTime?
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  createdByUserId  String
+  createdBy        User      @relation("TeacherInvitationCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@index([email, expiresAt])
+  @@index([expiresAt])
+}
+
+model College {
+  id          String             @id @default(cuid())
+  name        String
+  slug        String             @unique
+  createdAt   DateTime           @default(now())
+  memberships CollegeMembership[]
+  departments Department[]
+  subjects    Subject[]
+}
+
+model CollegeMembership {
+  userId    String
+  collegeId String
+  role      CollegeRole
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college   College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  assignments TeacherAssignment[]
+  enrollments StudentEnrollment[]
+
+  @@id([userId, collegeId])
+  @@index([collegeId, role])
+}
+
+model Department {
+  id             String         @id @default(cuid())
+  collegeId      String
+  name           String
+  college        College        @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  academicYears  AcademicYear[]
+
+  @@unique([id, collegeId])
+  @@unique([collegeId, name])
+  @@index([collegeId])
+}
+
+model AcademicYear {
+  id           String       @id @default(cuid())
+  collegeId    String
+  departmentId String
+  name         String
+  startsOn     DateTime?
+  endsOn       DateTime?
+  department   Department   @relation(fields: [departmentId, collegeId], references: [id, collegeId], onDelete: Cascade)
+  classes      Class[]
+  subjects     Subject[]
+
+  @@unique([id, collegeId, departmentId])
+  @@unique([departmentId, name])
+  @@index([collegeId, departmentId])
+}
+
+model Class {
+  id             String         @id @default(cuid())
+  collegeId      String
+  departmentId   String
+  academicYearId String
+  name           String
+  academicYear   AcademicYear   @relation(fields: [academicYearId, collegeId, departmentId], references: [id, collegeId, departmentId], onDelete: Cascade)
+  sections       Section[]
+  assignments    TeacherAssignment[]
+
+  @@unique([id, collegeId, departmentId, academicYearId])
+  @@unique([academicYearId, name])
+  @@index([collegeId, departmentId, academicYearId])
+}
+
+model Section {
+  id             String         @id @default(cuid())
+  collegeId      String
+  departmentId   String
+  academicYearId String
+  classId        String
+  name           String
+  class          Class          @relation(fields: [classId, collegeId, departmentId, academicYearId], references: [id, collegeId, departmentId, academicYearId], onDelete: Cascade)
+  assignments    TeacherAssignment[]
+  enrollments    StudentEnrollment[]
+
+  @@unique([id, collegeId, departmentId, academicYearId, classId])
+  @@unique([classId, name])
+  @@index([collegeId, departmentId, academicYearId, classId])
+}
+
+model Subject {
+  id             String       @id @default(cuid())
+  collegeId      String
+  departmentId   String
+  academicYearId String
+  name           String
+  code           String
+  college        College      @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  academicYear   AcademicYear @relation(fields: [academicYearId, collegeId, departmentId], references: [id, collegeId, departmentId], onDelete: Cascade)
+  assignments    TeacherAssignment[]
+
+  @@unique([id, collegeId, departmentId, academicYearId])
+  @@unique([collegeId, academicYearId, code])
+  @@index([collegeId, departmentId, academicYearId])
+}
+
+model TeacherProfile {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignments TeacherAssignment[]
+}
+
+model StudentProfile {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollments StudentEnrollment[]
+}
+
+model TeacherAssignment {
+  id             String            @id @default(cuid())
+  teacherUserId  String
+  collegeId      String
+  departmentId   String
+  academicYearId String
+  classId        String
+  sectionId      String
+  subjectId      String
+  createdAt      DateTime          @default(now())
+  membership     CollegeMembership @relation(fields: [teacherUserId, collegeId], references: [userId, collegeId], onDelete: Cascade)
+  teacher        TeacherProfile    @relation(fields: [teacherUserId], references: [userId], onDelete: Cascade)
+  section        Section           @relation(fields: [sectionId, collegeId, departmentId, academicYearId, classId], references: [id, collegeId, departmentId, academicYearId, classId], onDelete: Cascade)
+  subject        Subject           @relation(fields: [subjectId, collegeId, departmentId, academicYearId], references: [id, collegeId, departmentId, academicYearId], onDelete: Cascade)
+  class          Class             @relation(fields: [classId, collegeId, departmentId, academicYearId], references: [id, collegeId, departmentId, academicYearId], onDelete: Cascade)
+
+  @@unique([teacherUserId, sectionId, subjectId])
+  @@index([collegeId, departmentId, academicYearId, classId, sectionId, subjectId])
+}
+
+model StudentEnrollment {
+  id             String            @id @default(cuid())
+  studentUserId  String
+  collegeId      String
+  departmentId   String
+  academicYearId String
+  classId        String
+  sectionId      String
+  enrolledAt     DateTime          @default(now())
+  membership     CollegeMembership @relation(fields: [studentUserId, collegeId], references: [userId, collegeId], onDelete: Cascade)
+  student        StudentProfile    @relation(fields: [studentUserId], references: [userId], onDelete: Cascade)
+  section        Section           @relation(fields: [sectionId, collegeId, departmentId, academicYearId, classId], references: [id, collegeId, departmentId, academicYearId, classId], onDelete: Cascade)
+
+  @@unique([studentUserId, sectionId])
+  @@index([collegeId, departmentId, academicYearId, classId, sectionId])
+}

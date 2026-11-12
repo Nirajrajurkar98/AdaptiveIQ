@@ -2,6 +2,7 @@ node_modules/
 apps/*/node_modules/
 apps/*/dist/
 *.tsbuildinfo
+apps/api/src/generated/
 .env
 .env.*
 !.env.example

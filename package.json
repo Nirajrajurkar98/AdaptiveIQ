@@ -5,8 +5,14 @@
   "workspaces": ["apps/*"],
   "scripts": {
     "dev": "npm run dev --workspace @adaptiveiq/web",
-    "build": "npm run build --workspace @adaptiveiq/web",
-    "test": "npm test --workspace @adaptiveiq/web",
-    "typecheck": "npm run typecheck --workspace @adaptiveiq/web"
+    "dev:api": "npm run start:dev --workspace @adaptiveiq/api",
+    "build": "npm run build --workspace @adaptiveiq/web && npm run build --workspace @adaptiveiq/api",
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate": "npm run db:generate --workspace @adaptiveiq/api",
+    "db:migrate": "npm run db:migrate --workspace @adaptiveiq/api",
+    "db:deploy": "npm run db:deploy --workspace @adaptiveiq/api",
+    "db:seed": "npm run db:seed --workspace @adaptiveiq/api"
   }
 }

@@ -1,12 +1,12 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
-import App from './App';
+import { PrototypeApp } from './App';
 
 describe('prototype student experience', () => {
   beforeEach(() => localStorage.clear());
 
   it('keeps answers, explanations, and difficulty out of the active quiz screen', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
@@ -17,7 +17,7 @@ describe('prototype student experience', () => {
   });
 
   it('requires an answer and explicit submission before moving to the next question', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
@@ -36,7 +36,7 @@ describe('prototype student experience', () => {
   });
 
   it('saves answers on pause and resumes an active attempt', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
@@ -53,7 +53,7 @@ describe('prototype student experience', () => {
   });
 
   it('starts at Easy and uses the hidden adaptive difficulty to select the next question', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     fireEvent.click(screen.getByRole('button', { name: /circuit theory: quick practice/i }));
     fireEvent.click(screen.getByRole('button', { name: /start practice quiz/i }));
@@ -72,13 +72,13 @@ describe('prototype student experience', () => {
   });
 
   it('does not display another college’s quiz', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     expect(screen.queryByText(/operating systems: processes/i)).not.toBeInTheDocument();
   });
 
   it('shows animated scenes for at least ten subjects in the quiz catalog', () => {
-    const { container } = render(<App />);
+    const { container } = render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: /explore practice quizzes/i }));
     const scenes = container.querySelectorAll('.subject-scene');
     expect(scenes.length).toBeGreaterThanOrEqual(10);
@@ -87,7 +87,7 @@ describe('prototype student experience', () => {
   });
 
   it('keeps names outside the top ten private while showing the current student result', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.click(screen.getByRole('button', { name: 'Leaderboards' }));
     const board = screen.getByText(/top performers/i).closest('.panel');
     expect(board).not.toBeNull();
@@ -97,7 +97,7 @@ describe('prototype student experience', () => {
   });
 
   it('does not create a teacher quiz until its required question set is complete', () => {
-    render(<App />);
+    render(<PrototypeApp />);
     fireEvent.change(screen.getByRole('combobox', { name: /preview as role/i }), { target: { value: 'Teacher' } });
     fireEvent.click(screen.getByRole('button', { name: /create quiz/i }));
     fireEvent.change(screen.getByPlaceholderText(/circuit theory — chapter 3 practice/i), { target: { value: 'Networks practice' } });

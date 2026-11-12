@@ -8,6 +8,7 @@ import type { Question, Quiz, Role } from './domain/types';
 import QuestionDraftForm from './components/QuestionDraftForm';
 import { chooseNextQuestion, validateQuestionPool } from './domain/questionPool';
 import { resolveSubjectSceneKind } from './domain/subjectScene';
+import AuthApp from './auth/AuthApp';
 const DifficultyChart = lazy(() => import('./components/DifficultyChart'));
 
 type Page = 'dashboard' | 'quizzes' | 'instructions' | 'attempt' | 'results' | 'leaderboard' | 'create' | 'manage';
@@ -15,7 +16,7 @@ const currentCollegeId = 'sanjivani';
 const fmtDate = (value: string) => new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(value));
 const cx = (...classes: Array<string | false | undefined>) => classes.filter(Boolean).join(' ');
 
-function App() {
+export function PrototypeApp() {
   const [role, setRole] = useState<Role>('Student');
   const [page, setPage] = useState<Page>('dashboard');
   const [selectedId, setSelectedId] = useState('q-circuits');
@@ -225,4 +226,6 @@ function CreateQuiz({ onCancel, onCreate }: { onCancel: () => void; onCreate: (q
 
 function ManageQuizzes({ quizzes: items, onCreate, onOpen }: { quizzes: Quiz[]; onCreate: () => void; onOpen: (id: string) => void }) { const [search, setSearch] = useState(''); const rows = items.filter((item) => item.title.toLowerCase().includes(search.toLowerCase()) || item.subject.toLowerCase().includes(search.toLowerCase())); return <><PageHeading eyebrow="TEACHER WORKSPACE" title="Quiz management" subtitle="Create and manage practice quizzes for your classes." actions={<button className="primary-btn" onClick={onCreate}><Plus size={17}/>Create quiz</button>}/><div className="management-toolbar"><label className="search-box"><Search size={17}/><input placeholder="Search quizzes..." value={search} onChange={(event) => setSearch(event.target.value)}/></label><span className="management-count">{rows.length} quizzes</span></div><div className="panel manage-table"><div className="manage-header"><span>QUIZ</span><span>STATUS</span><span>PARTICIPATION</span><span>ATTEMPTS</span><span/></div>{rows.map((item) => <button className="manage-row" key={item.id} onClick={() => onOpen(item.id)}><span className="manage-quiz"><SubjectScene subject={item.subject} title={item.title} topics={item.topics} compact/><span><b>{item.title}</b><small>{item.subject} · {item.questionCount} questions</small></span></span><StatusPill status={getQuizStatus(item)}/><span className="participation-cell"><b>{item.completed}</b> completed <small>of {item.participants || '—'}</small></span><span>{item.attemptLimit} {item.attemptLimit === 1 ? 'attempt' : 'attempts'}</span><ArrowRight size={16}/></button>)}</div>{!rows.length && <EmptyState title="No quizzes found" message="Try a different search or create your first quiz." action="Create a quiz" onClick={onCreate}/>}</>; }
 
-export default App;
+export default function App() {
+  return <AuthApp prototype={<PrototypeApp />} />;
+}
